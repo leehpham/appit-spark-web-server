@@ -181,6 +181,14 @@ app.post('/users/:userId/reviews', function(request, response) {
   });
 });
 
+/*****USERS SEARCH FOR PLACES*****/
+app.get('/users/:userId/search', function(request, response) {
+  var sql = 'SELECT name FROM businesses WHERE name LIKE "%' + request.query.key + '%"';
+  con.query(sql, function(err, result) {
+    
+  })
+});
+
 app.listen(3000, function() {
   console.log("AppIt Web Server is running on port 3000 ...");
 });
