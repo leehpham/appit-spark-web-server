@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <style>
+    body{background:DeepSkyBlue;font-family:Lucida;color: #fff; padding:30px;}
+    h1{font-size: 48px; letter-spacing: 2px; text-align:center;}
+    p{font-size:26px; text-align:center;}
+  </style>
+  <% include partials/nav.ejs %>
+  <center><h1>Application Business Page</h1></center>
+  <center><p>Team AppIt</p></center>
+  <head></head>
+  <body>
+    <form id="business-form" method="POST" action="/business">
+      <label for="business_id">business_id</label>
+      <input type="number" name="business_id" />
+      <input type="Submit" value="Submit"/>
+  </body>
+</html>
