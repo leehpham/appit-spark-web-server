@@ -98,6 +98,7 @@ app.post('/business',urlencodedParser,function(req,res){
   var myobj_reviews=[];
   var business_id=req.body.business_id;
   var bid=business_id;
+  var count_rev;
   var sql = 'SELECT * FROM businesses WHERE business_id = ?';
   con.query(sql, [bid], function (err, result) {
     if (err) throw err;
@@ -112,24 +113,33 @@ app.post('/business',urlencodedParser,function(req,res){
     var sql_rev = 'SELECT * FROM reviews WHERE business_id = ?';
     con.query(sql_rev, [bid], function (err_rev, result_rev) {
       if (err_rev) throw err_rev;
+    var rev_count='SELECT COUNT(*) AS reviewCount FROM reviews WHERE business_id = ?';
+    con.query(rev_count, [bid], function (err_count, result_count) {
+      if (err_count) throw err_count;
+      if (err) throw err;
+      count_rev=result_count[0].reviewCount;
+      for (i = 0; i < count_rev; i++) {
     myobj_reviews.push({
-      review_id:result_rev[0].review_id,
-      lighting:result_rev[0].lighting,
-      audio:result_rev[0].audio,
-      decoration:result_rev[0].decoration,
-      staff:result_rev[0].staff,
-      comment:result_rev[0].comment,
-      average:result_rev[0].average,
-      user_id:result_rev[0].user_id,
-      business_id:result_rev[0].business_id
+      review_id:result_rev[i].review_id,
+      lighting:result_rev[i].lighting,
+      audio:result_rev[i].audio,
+      decoration:result_rev[i].decoration,
+      staff:result_rev[i].staff,
+      comment:result_rev[i].comment,
+      average:result_rev[i].average,
+      user_id:result_rev[i].user_id,
+      business_id:result_rev[i].business_id
     });
+  }
     console.log(myobj_reviews);
     res.writeHead(200, {'Content-Type': 'application/json'});
       var bus_in={'business':arr,'reviews':myobj_reviews};
       res.end(JSON.stringify(bus_in));
   });
   });
+  });
 });
+
 
 /*****USERS CREATE REVIEWS*****/
 // handle a POST request at the route that let users create reviews
