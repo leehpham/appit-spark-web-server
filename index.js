@@ -183,6 +183,7 @@ app.post('/sign-up',urlencodedParser,function(req,res){
     });
   });
 });
+
 app.post('/delete',urlencodedParser,function(req,res){
   var email=req.body.email;
   var pass=req.body.pw;
@@ -219,7 +220,6 @@ app.post('/delete',urlencodedParser,function(req,res){
     }
   });
 });
-
 
 /*****USERS CREATE REVIEWS*****/
 // handle a POST request at the route that let users create reviews
