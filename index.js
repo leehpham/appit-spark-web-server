@@ -33,6 +33,9 @@ app.get('/login',function(req,res){
 app.get('/business',function(req,res){
   res.render('business',{qs: req.query})
 });
+app.get('/delete',function(req,res){
+  res.render('delete',{qs: req.query})
+});
 app.post('/login',urlencodedParser,function(req,res){
   console.log(req.body);
   var pw=req.body.pw;
@@ -178,6 +181,42 @@ app.post('/sign-up',urlencodedParser,function(req,res){
       res.end(JSON.stringify(cred2));
     }
     });
+  });
+});
+app.post('/delete',urlencodedParser,function(req,res){
+  var email=req.body.email;
+  var pass=req.body.pw;
+  console.log(email);
+  console.log(pass);
+  var sql_check = 'SELECT * FROM users WHERE email = ?';
+  con.query(sql_check, [email], function (err_check, result_check) {
+    if (err_check) throw err_check;
+    if (result_check.length==0){
+      console.log('Does not exists');
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      var cred_del={credentials:'FALSE'};
+      res.end(JSON.stringify(cred_del));
+    }
+    else {
+      console.log('Exists');
+      var check_pw=result_check[0].password;
+      if (check_pw===pass)
+      {
+        var sql_delete = "DELETE FROM users WHERE email = ?";
+        con.query(sql_delete, [email], function (err, result) {
+          if (err) throw err;
+          console.log("Number of records deleted: " + result.affectedRows);
+          res.writeHead(200, {'Content-Type': 'application/json'});
+          var del_succ={credentials:'TRUE'};
+          res.end(JSON.stringify(del_succ));
+            });
+      }
+      else {
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        var del={credentials:'FALSE'};
+        res.end(JSON.stringify(del));
+      }
+    }
   });
 });
 
