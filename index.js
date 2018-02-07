@@ -183,14 +183,16 @@ app.post('/users/:userId/reviews', function(request, response) {
 
 /*****USERS SEARCH FOR PLACES*****/
 app.get('/users/:userId/search', function(request, response) {
-  /*
-  var sql = 'SELECT name FROM businesses WHERE name LIKE "%' + request.query.key + '%"';
+  var sql = 'SELECT * FROM businesses WHERE name LIKE "%' + request.query.key + '%"';
   con.query(sql, function(err, result) {
-    
-  })
-  */
-  console.log(request.query.name);
-  response.send(request.query.name);
+    if (err) throw err;
+    var data = [];    
+    for (var i = 0; i < result.length; i++) {
+      data.push(result[i]);
+    }
+    console.log(data);
+    response.send(data);
+  });
 });
 
 app.listen(3000, function() {
