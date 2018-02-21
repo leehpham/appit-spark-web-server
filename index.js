@@ -234,11 +234,14 @@ app.post('/delete',urlencodedParser,function(req,res){
 
 /*****USERS CREATE REVIEWS*****/
 // handle a POST request at the route that let users create reviews
-app.post('/users/:userId/reviews', function(request, response) {
+// app.post('/users/:userId/reviews', function(request, response) {
+// take the userId off the route
+app.post('/users/reviews', function(request, response) {
   // retrieve the user's id from the url parameter
-  var userId = Number(request.params.userId);
+  // var userId = Number(request.params.userId);
 
   // other info will be retrieved from the body of the request
+  var userId = request.body.userId;
   var businessId = request.body.businessId;
   var lighting = request.body.lighting;
   var audio = request.body.audio;
