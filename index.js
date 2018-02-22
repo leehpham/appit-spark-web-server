@@ -241,12 +241,12 @@ app.post('/users/reviews', function(request, response) {
   // var userId = Number(request.params.userId);
 
   // other info will be retrieved from the body of the request
-  var userId = request.body.userId;
-  var businessId = request.body.businessId;
-  var lighting = request.body.lighting;
-  var audio = request.body.audio;
-  var decoration = request.body.decoration;
-  var staff = request.body.staff;
+  var userId = Number(request.body.userId);
+  var businessId = Number(request.body.businessId);
+  var lighting = Number(request.body.lighting);
+  var audio = Number(request.body.audio);
+  var decoration = Number(request.body.decoration);
+  var staff = Number(request.body.staff);
   var comment = request.body.comment;
   var average = (lighting + audio + decoration + staff) / 4;
 
@@ -316,8 +316,14 @@ app.post('/users/reviews', function(request, response) {
 });
 
 /*****USERS SEARCH FOR PLACES*****/
-app.get('/users/:userId/search', function(request, response) {
-  var sql = 'SELECT * FROM businesses WHERE name LIKE "%' + request.query.key + '%"';
+// app.get('/users/:userId/search', function(request, response) {
+app.post('/users/search', function(request, response) {
+  var userId = Number(request.body.userId);
+  var key = request.body.key;
+
+  // var sql = 'SELECT * FROM businesses WHERE name LIKE "%' + request.query.key + '%"';
+  var sql = 'SELECT * FROM businesses WHERE name LIKE "%' + key + '%"';
+  
   con.query(sql, function(err, result) {
     if (err) throw err;
     var data = [];    
