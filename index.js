@@ -234,13 +234,8 @@ app.post('/delete',urlencodedParser,function(req,res){
 
 /*****USERS CREATE REVIEWS*****/
 // handle a POST request at the route that let users create reviews
-// app.post('/users/:userId/reviews', function(request, response) {
-// take the userId off the route
-app.post('/users/reviews', function(request, response) {
-  // retrieve the user's id from the url parameter
-  // var userId = Number(request.params.userId);
-
-  // other info will be retrieved from the body of the request
+app.post('/users/reviews', urlencodedParser, function(request, response) {
+  // info will be retrieved from the body of the request
   var userId = Number(request.body.userId);
   var businessId = Number(request.body.businessId);
   var lighting = Number(request.body.lighting);
@@ -266,7 +261,7 @@ app.post('/users/reviews', function(request, response) {
       con.query(insertReview, [lighting, audio, decoration, staff, comment, average, userId, businessId], function(err, result) {
         if(err) {
           reply.status = false;
-          response.send(reply);
+          response.send(JSON.stringify(reply));
           return callback(err);
         }
         console.log("userId " + userId + " inserted 1 review");
@@ -280,7 +275,7 @@ app.post('/users/reviews', function(request, response) {
       con.query(queryInfo, businessId, function(err, result) {
         if(err) {
           reply.status = false;
-          response.send(reply);
+          response.send(JSON.stringify(reply));
           return callback(err);
         }
         // "result" is an array containing each row as an object
@@ -298,7 +293,7 @@ app.post('/users/reviews', function(request, response) {
   ], function(err) {
       if (err) {
         reply.status = false;
-        response.send(reply);
+        response.send(JSON.stringify(reply));
         throw err;
       }
       // finally update the new data into the businesses table
@@ -306,18 +301,18 @@ app.post('/users/reviews', function(request, response) {
       con.query(updateInfo, [numberOfReviews, averageRating, businessId], function(err, result) {
         if(err) {
           reply.status = false;
-          response.send(reply);
+          response.send(JSON.stringify(reply));
           throw err;
         }
         console.log("Data updated");
-        response.send(reply);
+        response.send(JSON.stringify(reply));
       });
   });
 });
 
 /*****USERS SEARCH FOR PLACES*****/
 // app.get('/users/:userId/search', function(request, response) {
-app.post('/users/search', function(request, response) {
+app.post('/users/search', urlencodedParser, function(request, response) {
   var userId = Number(request.body.userId);
   var key = request.body.key;
 
@@ -331,7 +326,7 @@ app.post('/users/search', function(request, response) {
       data.push(result[i]);
     }
     console.log(data);
-    response.send(data);
+    response.send(JSON.stringify(data));
   });
 });
 
