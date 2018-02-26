@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <style>
+    body{background:DeepSkyBlue;font-family:Lucida;color: #fff; padding:30px;}
+    h1{font-size: 48px; letter-spacing: 2px; text-align:center;}
+    p{font-size:26px; text-align:center;}
+  </style>
+  <% include partials/nav.ejs %>
+  <center><h1>Application Business Page</h1></center>
+  <center><p>Team AppIt</p></center>
+  <head></head>
+  <body>
+    <form id="reviews-form" method="POST" action="/reviews">
+      <p><label for="user_id">User Id</label></p>
+      <p><input type="number" name="user_id" /></p>
+      <p><label for="business_id">businessId</label></p>
+      <p><input type="number" name="business_id" /></p>
+      <p><label for="lighting">lighting</label></p>
+      <p><input type="number" name="lighting" /></p>
+      <p><label for="audio">audio</label></p>
+      <p><input type="number" name="audio" /></p>
+      <p><label for="decoration">decoration</label></p>
+      <p><input type="number" name="decoration" /></p>
+      <p><label for="staff">staff</label></p>
+      <p><input type="number" name="staff" /></p>
+      <p><label for="comment">comment</label></p>
+      <p><input type="text" name="comment" /></p>
+      <p><input type="Submit" value="Submit"/></p>
+  </body>
+</html>
