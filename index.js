@@ -184,7 +184,7 @@ app.post('/sign-up',urlencodedParser,function(req,res){
            console.log('Username exists');
            res.writeHead(200, {'Content-Type': 'application/json'});
            var cred_un={credentials:'FALSE', message:'Username Exists'};
-           res.end(JSON.stringify(cred_un));  
+           res.end(JSON.stringify(cred_un));
         }
         });
     }
@@ -198,6 +198,7 @@ app.post('/sign-up',urlencodedParser,function(req,res){
     });
   });
 });
+
 app.post('/delete',urlencodedParser,function(req,res){
   var email=req.body.email;
   var pass=req.body.pw;
