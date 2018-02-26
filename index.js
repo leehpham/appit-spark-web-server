@@ -236,6 +236,7 @@ app.post('/delete',urlencodedParser,function(req,res){
 });
 
 /*****USERS CREATE REVIEWS*****/
+// handle a POST request at the route that let users create reviews
 app.post('/reviews',urlencodedParser,function(req,res){
   // retrieve the user's id from the url parameter
   var userId = Number(req.body.user_id);
@@ -272,7 +273,7 @@ app.post('/reviews',urlencodedParser,function(req,res){
       con.query(insertReview, [lighting, audio, decoration, staff, comment, average, userId, businessId], function(err, result) {
         if(err) {
           reply.status = false;
-          response.send(reply);
+          res.send(reply);
           return callback(err);
         }
         console.log("userId " + userId + " inserted 1 review");
@@ -316,11 +317,12 @@ app.post('/reviews',urlencodedParser,function(req,res){
           throw err;
         }
         console.log("Data updated");
-        res.send(reply);
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        rep={credentials:'TRUE'};
+        res.end(JSON.stringify(rep));
       });
   });
 });
-
 
 app.listen(3000, function() {
   console.log("AppIt Web Server is running on port 3000 ...");
