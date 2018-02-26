@@ -1,11 +1,11 @@
 var mysql = require('mysql');
 var express=require('express');
+var fs=require('fs');
 var app=express();
 var bodyParser=require('body-parser');
-var urlencodedParser=bodyParser.urlencoded({extended: false});
-
-// import the async package to deal with asynchronous db interactions
+var util=require('util');
 var async = require('async');
+var urlencodedParser=bodyParser.urlencoded({extended: false});
 
 // parse application/json
 app.use(bodyParser.json());
@@ -35,6 +35,9 @@ app.get('/business',function(req,res){
 });
 app.get('/delete',function(req,res){
   res.render('delete',{qs: req.query})
+});
+app.get('/reviews',function(req,res){
+  res.render('reviews',{qs: req.query})
 });
 app.post('/login',urlencodedParser,function(req,res){
   console.log(req.body);
@@ -233,19 +236,25 @@ app.post('/delete',urlencodedParser,function(req,res){
 });
 
 /*****USERS CREATE REVIEWS*****/
-// handle a POST request at the route that let users create reviews
-app.post('/users/:userId/reviews', function(request, response) {
+app.post('/reviews',urlencodedParser,function(req,res){
   // retrieve the user's id from the url parameter
-  var userId = Number(request.params.userId);
+  var userId = Number(req.body.user_id);
 
   // other info will be retrieved from the body of the request
-  var businessId = request.body.businessId;
-  var lighting = request.body.lighting;
-  var audio = request.body.audio;
-  var decoration = request.body.decoration;
-  var staff = request.body.staff;
-  var comment = request.body.comment;
+  var businessId = req.body.business_id;
+  var lighting = req.body.lighting;
+  var audio = req.body.audio;
+  var decoration = req.body.decoration;
+  var staff = req.body.staff;
+  var comment = req.body.comment;
   var average = (lighting + audio + decoration + staff) / 4;
+
+  console.log(businessId);
+  console.log(lighting);
+  console.log(audio);
+  console.log(decoration);
+  console.log(staff);
+  console.log(comment);
 
   var numberOfReviews;
   var averageRating;
@@ -277,7 +286,7 @@ app.post('/users/:userId/reviews', function(request, response) {
       con.query(queryInfo, businessId, function(err, result) {
         if(err) {
           reply.status = false;
-          response.send(reply);
+          res.send(reply);
           return callback(err);
         }
         // "result" is an array containing each row as an object
@@ -295,7 +304,7 @@ app.post('/users/:userId/reviews', function(request, response) {
   ], function(err) {
       if (err) {
         reply.status = false;
-        response.send(reply);
+        res.send(reply);
         throw err;
       }
       // finally update the new data into the businesses table
@@ -303,14 +312,15 @@ app.post('/users/:userId/reviews', function(request, response) {
       con.query(updateInfo, [numberOfReviews, averageRating, businessId], function(err, result) {
         if(err) {
           reply.status = false;
-          response.send(reply);
+          res.send(reply);
           throw err;
         }
         console.log("Data updated");
-        response.send(reply);
+        res.send(reply);
       });
   });
 });
+
 
 app.listen(3000, function() {
   console.log("AppIt Web Server is running on port 3000 ...");
