@@ -236,8 +236,6 @@ app.post('/delete',urlencodedParser,function(req,res){
   });
 });
 
-/*****USERS CREATE REVIEWS*****/
-// handle a POST request at the route that let users create reviews
 app.post('/reviews',urlencodedParser,function(req,res){
   // retrieve the user's id from the url parameter
   var userId = Number(req.body.user_id);
@@ -262,7 +260,7 @@ app.post('/reviews',urlencodedParser,function(req,res){
   var averageRating;
 
   var reply = {
-    status: true
+    credentials: 'TRUE'
   };
 
   async.series([
@@ -273,8 +271,10 @@ app.post('/reviews',urlencodedParser,function(req,res){
       // since we have multiple subsitutions, use an array
       con.query(insertReview, [lighting, audio, decoration, staff, comment, average, userId, businessId], function(err, result) {
         if(err) {
-          reply.status = false;
-          res.send(reply);
+          rep_f4={credentials:'FALSE'};
+          res.end(JSON.stringify(rep_f4));
+          //reply.status = false;
+          //res.send(reply);
           return callback(err);
         }
         console.log("userId " + userId + " inserted 1 review");
@@ -287,8 +287,11 @@ app.post('/reviews',urlencodedParser,function(req,res){
       var queryInfo = 'SELECT number_of_reviews, average_rating FROM businesses WHERE business_id = ?';
       con.query(queryInfo, businessId, function(err, result) {
         if(err) {
-          reply.status = false;
-          res.send(reply);
+          res.writeHead(200, {'Content-Type': 'application/json'});
+          rep_f3={credentials:'FALSE'};
+          res.end(JSON.stringify(rep_f3));
+          //reply.status = false;
+          //res.send(reply);
           return callback(err);
         }
         // "result" is an array containing each row as an object
@@ -305,16 +308,21 @@ app.post('/reviews',urlencodedParser,function(req,res){
     }
   ], function(err) {
       if (err) {
-        reply.status = false;
-        res.send(reply);
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        rep_f={credentials:'FALSE'};
+        res.end(JSON.stringify(rep_f));
+        //reply.status = false;
+        //res.send(reply);
         throw err;
       }
       // finally update the new data into the businesses table
       var updateInfo = 'UPDATE businesses SET number_of_reviews = ?, average_rating = ? WHERE business_id = ?';
       con.query(updateInfo, [numberOfReviews, averageRating, businessId], function(err, result) {
         if(err) {
-          reply.status = false;
-          res.send(reply);
+          rep_f2={credentials:'FALSE'};
+          res.end(JSON.stringify(rep_f2));
+          //reply.status = false;
+          //res.send(reply);
           throw err;
         }
         console.log("Data updated");
@@ -324,6 +332,7 @@ app.post('/reviews',urlencodedParser,function(req,res){
       });
   });
 });
+
 
 app.listen(3000, function() {
   console.log("AppIt Web Server is running on port 3000 ...");
