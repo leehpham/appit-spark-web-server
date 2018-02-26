@@ -236,6 +236,8 @@ app.post('/delete',urlencodedParser,function(req,res){
   });
 });
 
+/*****USERS CREATE REVIEWS*****/
+// handle a POST request at the route that let users create reviews
 app.post('/reviews',urlencodedParser,function(req,res){
   // retrieve the user's id from the url parameter
   var userId = Number(req.body.user_id);
@@ -332,7 +334,6 @@ app.post('/reviews',urlencodedParser,function(req,res){
       });
   });
 });
-
 
 app.listen(3000, function() {
   console.log("AppIt Web Server is running on port 3000 ...");
