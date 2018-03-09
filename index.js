@@ -260,8 +260,11 @@ app.post('/users/reviews', urlencodedParser, function(request, response) {
       // since we have multiple subsitutions, use an array
       con.query(insertReview, [lighting, audio, decoration, staff, comment, average, userId, businessId], function(err, result) {
         if(err) {
+          // testing
+          response.writeHead(200, {'Content-Type': 'application/json'});
           reply.status = false;
-          response.send(JSON.stringify(reply));
+          // response.send(JSON.stringify(reply));
+          response.end(JSON.stringify(reply));
           return callback(err);
         }
         console.log("userId " + userId + " inserted 1 review");
@@ -274,8 +277,11 @@ app.post('/users/reviews', urlencodedParser, function(request, response) {
       var queryInfo = 'SELECT number_of_reviews, average_rating FROM businesses WHERE business_id = ?';
       con.query(queryInfo, businessId, function(err, result) {
         if(err) {
+          // testing
+          response.writeHead(200, {'Content-Type': 'application/json'});
           reply.status = false;
-          response.send(JSON.stringify(reply));
+          // response.send(JSON.stringify(reply));
+          response.end(JSON.stringify(reply));
           return callback(err);
         }
         // "result" is an array containing each row as an object
@@ -292,20 +298,30 @@ app.post('/users/reviews', urlencodedParser, function(request, response) {
     }
   ], function(err) {
       if (err) {
+        // testing
+        response.writeHead(200, {'Content-Type': 'application/json'});
         reply.status = false;
-        response.send(JSON.stringify(reply));
+        // response.send(JSON.stringify(reply));
+        response.end(JSON.stringify(reply))
         throw err;
       }
       // finally update the new data into the businesses table
       var updateInfo = 'UPDATE businesses SET number_of_reviews = ?, average_rating = ? WHERE business_id = ?';
       con.query(updateInfo, [numberOfReviews, averageRating, businessId], function(err, result) {
         if(err) {
+          // testing
+          response.writeHead(200, {'Content-Type': 'application/json'});
           reply.status = false;
-          response.send(JSON.stringify(reply));
+          // response.send(JSON.stringify(reply));
+          response.end(JSON.stringify(reply));
+          
           throw err;
         }
         console.log("Data updated");
-        response.send(JSON.stringify(reply));
+        // testing
+        response.writeHead(200, {'Content-Type': 'application/json'});
+        // response.send(JSON.stringify(reply));
+        response.end(JSON.stringify(reply));
       });
   });
 });
