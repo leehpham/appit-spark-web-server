@@ -260,10 +260,8 @@ app.post('/users/reviews', urlencodedParser, function(request, response) {
       // since we have multiple subsitutions, use an array
       con.query(insertReview, [lighting, audio, decoration, staff, comment, average, userId, businessId], function(err, result) {
         if(err) {
-          // testing
           response.writeHead(200, {'Content-Type': 'application/json'});
           reply.status = false;
-          // response.send(JSON.stringify(reply));
           response.end(JSON.stringify(reply));
           return callback(err);
         }
@@ -277,10 +275,8 @@ app.post('/users/reviews', urlencodedParser, function(request, response) {
       var queryInfo = 'SELECT number_of_reviews, average_rating FROM businesses WHERE business_id = ?';
       con.query(queryInfo, businessId, function(err, result) {
         if(err) {
-          // testing
           response.writeHead(200, {'Content-Type': 'application/json'});
           reply.status = false;
-          // response.send(JSON.stringify(reply));
           response.end(JSON.stringify(reply));
           return callback(err);
         }
@@ -298,10 +294,8 @@ app.post('/users/reviews', urlencodedParser, function(request, response) {
     }
   ], function(err) {
       if (err) {
-        // testing
         response.writeHead(200, {'Content-Type': 'application/json'});
         reply.status = false;
-        // response.send(JSON.stringify(reply));
         response.end(JSON.stringify(reply))
         throw err;
       }
@@ -309,18 +303,14 @@ app.post('/users/reviews', urlencodedParser, function(request, response) {
       var updateInfo = 'UPDATE businesses SET number_of_reviews = ?, average_rating = ? WHERE business_id = ?';
       con.query(updateInfo, [numberOfReviews, averageRating, businessId], function(err, result) {
         if(err) {
-          // testing
           response.writeHead(200, {'Content-Type': 'application/json'});
           reply.status = false;
-          // response.send(JSON.stringify(reply));
           response.end(JSON.stringify(reply));
           
           throw err;
         }
         console.log("Data updated");
-        // testing
         response.writeHead(200, {'Content-Type': 'application/json'});
-        // response.send(JSON.stringify(reply));
         response.end(JSON.stringify(reply));
       });
   });
@@ -342,7 +332,8 @@ app.post('/users/search', urlencodedParser, function(request, response) {
       data.push(result[i]);
     }
     console.log(data);
-    response.send(JSON.stringify(data));
+    response.writeHead(200, {'Content-Type': 'application/json'});
+    response.end(JSON.stringify(data));
   });
 });
 
