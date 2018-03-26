@@ -323,13 +323,16 @@ app.post('/users/search', urlencodedParser, function(request, response) {
   var key = request.body.key;
 
   // var sql = 'SELECT * FROM businesses WHERE name LIKE "%' + request.query.key + '%"';
-  var sql = 'SELECT * FROM businesses WHERE name LIKE "%' + key + '%"';
+  var sql = 'SELECT business_id, name, address, type FROM businesses WHERE name LIKE "%' + key + '%"';
   
   con.query(sql, function(err, result) {
     if (err) throw err;
-    var data = [];    
+    // The return data is an object
+    var data = {};
+    // Property "business" in the return data is an array of objects
+    data.business = [];
     for (var i = 0; i < result.length; i++) {
-      data.push(result[i]);
+      data.business.push(result[i]);
     }
     console.log(data);
     response.writeHead(200, {'Content-Type': 'application/json'});
