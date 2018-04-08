@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <style>
+    body{background:DeepSkyBlue;font-family:Lucida;color: #fff; padding:30px;}
+    h1{font-size: 48px; letter-spacing: 2px; text-align:center;}
+    p{font-size:16px; text-align:left;}
+  </style>
+  <% include partials/nav.ejs %>
+  <center><h1>Team AppIt - Sign Up</h1></center>
+  <head></head>
+  <body>
+    <form id="business-form" method="POST" action="/newbusiness">
+      <p><label for="name">Name</label></p>
+      <p><input type="Name" name="name" /></p>
+      <p><label for="address">Address</label></p>
+      <p><input type="text" name="address" /></p>
+      <p><select name="type">
+      <option value="Food">Food</option>
+      <option value="Entertainment">Entertainment</option>
+      </select></p>
+      <p><label for="phone">Phone</label></p>
+      <p><input type="tel" name="phone" /></p>
+      <p><label for="open_hours">Open-hours</label></p>
+      <p><input type="text" name="open_hours" /></p>
+      <p><input type="Submit" value="Submit"/></p>
+  </body>
+</html>
