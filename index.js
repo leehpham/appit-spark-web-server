@@ -428,6 +428,6 @@ app.post('/reviews',urlencodedParser,function(req,res){
   });
 });
 
-app.listen(9000, function() {
+app.listen(3000, function() {
   console.log("AppIt Web Server is running on port 3000 ...");
 });
