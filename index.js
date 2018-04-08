@@ -39,6 +39,12 @@ app.get('/delete',function(req,res){
 app.get('/reviews',function(req,res){
   res.render('reviews',{qs: req.query})
 });
+app.get('/newbusiness',function(req,res){
+  res.render('newbusiness',{qs: req.query})
+});
+app.get('/mapinfo',function(req,res){
+  res.render('mapinfo',{qs: req.query})
+});
 app.post('/login',urlencodedParser,function(req,res){
   console.log(req.body);
   var pw=req.body.pw;
@@ -85,7 +91,6 @@ app.post('/login',urlencodedParser,function(req,res){
               var arr={'credentials':'TRUE','user':myobj_user,'business':myobj_business};
               res.end(JSON.stringify(arr));
               });
-          //res.render('login-success',{data: req.body})
         }
         else {
           res.writeHead(200, {'Content-Type': 'application/json'});
@@ -102,6 +107,7 @@ app.post('/login',urlencodedParser,function(req,res){
 app.post('/business',urlencodedParser,function(req,res){
   console.log(req.body);
   var myobj_reviews=[];
+  var names_id=[];
   var business_id=req.body.business_id;
   var bid=business_id;
   var count_rev;
@@ -122,27 +128,60 @@ app.post('/business',urlencodedParser,function(req,res){
     var rev_count='SELECT COUNT(*) AS reviewCount FROM reviews WHERE business_id = ?';
     con.query(rev_count, [bid], function (err_count, result_count) {
       if (err_count) throw err_count;
-      if (err) throw err;
       count_rev=result_count[0].reviewCount;
       for (i = 0; i < count_rev; i++) {
-    myobj_reviews.push({
-      review_id:result_rev[i].review_id,
-      lighting:result_rev[i].lighting,
-      audio:result_rev[i].audio,
-      decoration:result_rev[i].decoration,
-      staff:result_rev[i].staff,
-      comment:result_rev[i].comment,
-      average:result_rev[i].average,
-      user_id:result_rev[i].user_id,
-      business_id:result_rev[i].business_id
+        var id=result_rev[i].user_id;
+        var sql_name = 'SELECT username FROM users WHERE user_id = ?';
+        con.query(sql_name, [id], function (err_name, result_name) {
+          if (err_rev) throw err_rev;
+        names_id.push(result_name);
+        console.log(names_id);
+        });
+        myobj_reviews.push({
+          review_id:result_rev[i].review_id,
+          lighting:result_rev[i].lighting,
+          audio:result_rev[i].audio,
+          decoration:result_rev[i].decoration,
+          staff:result_rev[i].staff,
+          comment:result_rev[i].comment,
+          average:result_rev[i].average,
+          user_id:result_rev[i].user_id,
+          business_id:result_rev[i].business_id
+      });
+    }
+      console.log(myobj_reviews);
+      res.writeHead(200, {'Content-Type': 'application/json'});
+        var bus_in={'business':arr,'reviews':myobj_reviews};
+        res.end(JSON.stringify(bus_in));
+  });
+  });
+  });
+});
+app.post('/mapinfo',urlencodedParser,function(req,res){
+  var a=req.body.name;
+  console.log(a);
+  var my_count;
+
+  con.query("SELECT COUNT(*) AS namesCount FROM businesses", function (err, rows, fields) {
+  if (err) throw err;
+  my_count=rows[0].namesCount;
+  });
+  var myobj_business; var ar;
+  con.query("SELECT * FROM businesses", function (err, result, fields) {
+  if (err) throw err;
+  myobj_business=[];
+  for (i = 0; i < my_count; i++) {
+    myobj_business.push({
+      business_id:result[i].business_id,
+      name:result[i].name,
+      address:result[i].address,
+      type:result[i].type
     });
-  }
-    console.log(myobj_reviews);
+    }
+    console.log(myobj_business);
     res.writeHead(200, {'Content-Type': 'application/json'});
-      var bus_in={'business':arr,'reviews':myobj_reviews};
-      res.end(JSON.stringify(bus_in));
-  });
-  });
+    var arr={'business':myobj_business};
+    res.end(JSON.stringify(arr));
   });
 });
 
@@ -233,6 +272,60 @@ app.post('/delete',urlencodedParser,function(req,res){
         res.end(JSON.stringify(del));
       }
     }
+  });
+});
+
+app.post('/newbusiness',urlencodedParser,function(req,res){
+  var count_business;
+  con.query("SELECT COUNT(*) AS bCount FROM businesses", function (err, rows, fields) {
+  var ucount;
+  var finalcount;
+  if (err) throw err;
+  ucount=rows[0].bCount;
+  finalcount=ucount+1;
+  console.log(req.body);
+  //Make sure on the front end, we get data in the correct format and not NULL
+  var business=finalcount;
+  var bn=req.body.name;
+  var addr=req.body.address;
+  var typ=req.body.type;
+  var ph=req.body.phone;
+  var oh=req.body.open_hours;
+  var sql_check = 'SELECT * FROM businesses WHERE name = ?';
+  con.query(sql_check, [bn], function (err_check, result_check) {
+    if (err_check) throw err_check;
+    if (result_check.length==0){
+      console.log('Business does not exists');
+      var sql_un = 'SELECT * FROM businesses WHERE name = ?';
+      con.query(sql_un, [bn], function (err_un, result_un) {
+        if (err_un) throw err_un;
+        if (result_un.length==0){
+          var sql = "INSERT INTO businesses (business_id,name,address,type,phone,open_hours,number_of_reviews,average_rating) VALUES ?";
+          var values = [[business, bn, addr, typ, ph, oh,0,0]];
+          con.query(sql, [values], function (err, result) {
+           if (err) throw err;
+           console.log("Number of records inserted: " + result.affectedRows);
+           res.writeHead(200, {'Content-Type': 'application/json'});
+           var cred={credentials:'TRUE'};
+           res.end(JSON.stringify(cred));
+           });
+        }
+        else {
+           console.log('Business exists');
+           res.writeHead(200, {'Content-Type': 'application/json'});
+           var cred_un={credentials:'FALSE', message:'Username Exists'};
+           res.end(JSON.stringify(cred_un));
+        }
+        });
+    }
+    else {
+      check_exists=result_check[0].email;
+      console.log(check_exists);
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      var cred2={credentials:'FALSE', message:'Business Exists'};
+      res.end(JSON.stringify(cred2));
+    }
+    });
   });
 });
 
@@ -335,6 +428,6 @@ app.post('/reviews',urlencodedParser,function(req,res){
   });
 });
 
-app.listen(5000, function() {
+app.listen(9000, function() {
   console.log("AppIt Web Server is running on port 3000 ...");
 });
