@@ -339,31 +339,22 @@ app.post('/newbusiness',urlencodedParser,function(req,res){
 
 /*****USERS CREATE REVIEWS*****/
 // handle a POST request at the route that let users create reviews
-app.post('/reviews',urlencodedParser,function(req,res){
-  // retrieve the user's id from the url parameter
-  var userId = Number(req.body.user_id);
-
-  // other info will be retrieved from the body of the request
-  var businessId = req.body.business_id;
-  var lighting = req.body.lighting;
-  var audio = req.body.audio;
-  var decoration = req.body.decoration;
-  var staff = req.body.staff;
-  var comment = req.body.comment;
+app.post('/users/reviews', urlencodedParser, function(request, response) {
+  // info will be retrieved from the body of the request
+  var userId = Number(request.body.userId);
+  var businessId = Number(request.body.businessId);
+  var lighting = Number(request.body.lighting);
+  var audio = Number(request.body.audio);
+  var decoration = Number(request.body.decoration);
+  var staff = Number(request.body.staff);
+  var comment = request.body.comment;
   var average = (lighting + audio + decoration + staff) / 4;
-
-  console.log(businessId);
-  console.log(lighting);
-  console.log(audio);
-  console.log(decoration);
-  console.log(staff);
-  console.log(comment);
 
   var numberOfReviews;
   var averageRating;
 
   var reply = {
-    credentials: 'TRUE'
+    status: true
   };
 
   async.series([
@@ -374,10 +365,9 @@ app.post('/reviews',urlencodedParser,function(req,res){
       // since we have multiple subsitutions, use an array
       con.query(insertReview, [lighting, audio, decoration, staff, comment, average, userId, businessId], function(err, result) {
         if(err) {
-          rep_f4={credentials:'FALSE'};
-          res.end(JSON.stringify(rep_f4));
-          //reply.status = false;
-          //res.send(reply);
+          response.writeHead(200, {'Content-Type': 'application/json'});
+          reply.status = false;
+          response.end(JSON.stringify(reply));
           return callback(err);
         }
         console.log("userId " + userId + " inserted 1 review");
@@ -390,11 +380,9 @@ app.post('/reviews',urlencodedParser,function(req,res){
       var queryInfo = 'SELECT number_of_reviews, average_rating FROM businesses WHERE business_id = ?';
       con.query(queryInfo, businessId, function(err, result) {
         if(err) {
-          res.writeHead(200, {'Content-Type': 'application/json'});
-          rep_f3={credentials:'FALSE'};
-          res.end(JSON.stringify(rep_f3));
-          //reply.status = false;
-          //res.send(reply);
+          response.writeHead(200, {'Content-Type': 'application/json'});
+          reply.status = false;
+          response.end(JSON.stringify(reply));
           return callback(err);
         }
         // "result" is an array containing each row as an object
@@ -411,28 +399,49 @@ app.post('/reviews',urlencodedParser,function(req,res){
     }
   ], function(err) {
       if (err) {
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        rep_f={credentials:'FALSE'};
-        res.end(JSON.stringify(rep_f));
-        //reply.status = false;
-        //res.send(reply);
+        response.writeHead(200, {'Content-Type': 'application/json'});
+        reply.status = false;
+        response.end(JSON.stringify(reply))
         throw err;
       }
       // finally update the new data into the businesses table
       var updateInfo = 'UPDATE businesses SET number_of_reviews = ?, average_rating = ? WHERE business_id = ?';
       con.query(updateInfo, [numberOfReviews, averageRating, businessId], function(err, result) {
         if(err) {
-          rep_f2={credentials:'FALSE'};
-          res.end(JSON.stringify(rep_f2));
-          //reply.status = false;
-          //res.send(reply);
+          response.writeHead(200, {'Content-Type': 'application/json'});
+          reply.status = false;
+          response.end(JSON.stringify(reply));
+          
           throw err;
         }
         console.log("Data updated");
-        res.writeHead(200, {'Content-Type': 'application/json'});
-        rep={credentials:'TRUE'};
-        res.end(JSON.stringify(rep));
+        response.writeHead(200, {'Content-Type': 'application/json'});
+        response.end(JSON.stringify(reply));
       });
+  });
+});
+
+/*****USERS SEARCH FOR PLACES*****/
+// app.get('/users/:userId/search', function(request, response) {
+app.post('/users/search', urlencodedParser, function(request, response) {
+  var userId = Number(request.body.userId);
+  var key = request.body.key;
+
+  // var sql = 'SELECT * FROM businesses WHERE name LIKE "%' + request.query.key + '%"';
+  var sql = 'SELECT business_id, name, address, type FROM businesses WHERE name LIKE "%' + key + '%"';
+  
+  con.query(sql, function(err, result) {
+    if (err) throw err;
+    // The return data is an object
+    var data = {};
+    // Property "business" in the return data is an array of objects
+    data.business = [];
+    for (var i = 0; i < result.length; i++) {
+      data.business.push(result[i]);
+    }
+    console.log(data);
+    response.writeHead(200, {'Content-Type': 'application/json'});
+    response.end(JSON.stringify(data));
   });
 });
 
