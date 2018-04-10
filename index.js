@@ -191,6 +191,7 @@ app.post('/mapinfo',urlencodedParser,function(req,res){
     res.end(JSON.stringify(arr));
   });
 });
+});
 
 app.post('/sign-up',urlencodedParser,function(req,res){
   var count_user;
