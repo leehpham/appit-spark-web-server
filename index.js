@@ -106,6 +106,17 @@ app.post('/login',urlencodedParser,function(req,res){
 });
 app.post('/business',urlencodedParser,function(req,res){
   console.log(req.body);
+  var obj_un=[];
+  con.query("SELECT user_id,username FROM users", function (err, result, fields) {
+  if (err) throw err;
+  var len=result.length;
+  console.log(len);
+  var i=0;
+  for(i=0;i<len;i++)
+  {
+    console.log(result[i]);
+    obj_un.push(result[i]);
+  }
   var myobj_reviews=[];
   var names_id=[];
   var business_id=req.body.business_id;
@@ -122,6 +133,7 @@ app.post('/business',urlencodedParser,function(req,res){
     open_hours:result[0].open_hours,
     number_of_reviews:result[0].number_of_reviews,
     average_rating:result[0].average_rating };
+
     var sql_rev = 'SELECT * FROM reviews WHERE business_id = ?';
     con.query(sql_rev, [bid], function (err_rev, result_rev) {
       if (err_rev) throw err_rev;
@@ -131,12 +143,6 @@ app.post('/business',urlencodedParser,function(req,res){
       count_rev=result_count[0].reviewCount;
       for (i = 0; i < count_rev; i++) {
         var id=result_rev[i].user_id;
-        var sql_name = 'SELECT username FROM users WHERE user_id = ?';
-        con.query(sql_name, [id], function (err_name, result_name) {
-          if (err_rev) throw err_rev;
-        names_id.push(result_name);
-        console.log(names_id);
-        });
         myobj_reviews.push({
           review_id:result_rev[i].review_id,
           lighting:result_rev[i].lighting,
@@ -146,6 +152,7 @@ app.post('/business',urlencodedParser,function(req,res){
           comment:result_rev[i].comment,
           average:result_rev[i].average,
           user_id:result_rev[i].user_id,
+          username:obj_un[id-1].username,
           business_id:result_rev[i].business_id
       });
     }
