@@ -69,7 +69,8 @@ app.post('/login',urlencodedParser,function(req,res){
             myobj_user=[];
             myobj_user.push({
               uname:result[0].username,
-              dob:result[0].dob
+              dob:result[0].dob,
+              uid:result[0].user_id
               });
             var my_count;
             con.query("SELECT COUNT(*) AS namesCount FROM businesses", function (err, rows, fields) {
