@@ -429,7 +429,7 @@ app.post('/users/search', urlencodedParser, function(request, response) {
   var key = request.body.key;
 
   // var sql = 'SELECT * FROM businesses WHERE name LIKE "%' + request.query.key + '%"';
-  var sql = 'SELECT business_id, name, address, type FROM businesses WHERE name LIKE "%' + key + '%"';
+  var sql = 'SELECT business_id, name, address, type, number_of_reviews, average_rating FROM businesses WHERE name LIKE "%' + key + '%"';
   
   con.query(sql, function(err, result) {
     if (err) throw err;
