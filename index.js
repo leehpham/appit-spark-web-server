@@ -42,8 +42,8 @@ app.get('/reviews',function(req,res){
 app.get('/newbusiness',function(req,res){
   res.render('newbusiness',{qs: req.query})
 });
-app.get('/mapinfo',function(req,res){
-  res.render('mapinfo',{qs: req.query})
+app.get('/maps',function(req,res){
+  res.render('maps',{qs: req.query})
 });
 app.post('/login',urlencodedParser,function(req,res){
   console.log(req.body);
@@ -165,9 +165,9 @@ app.post('/business',urlencodedParser,function(req,res){
   });
   });
 });
-app.post('/mapinfo',urlencodedParser,function(req,res){
-  var a=req.body.name;
-  console.log(a);
+app.post('/maps',urlencodedParser,function(req,res){
+  var map=req.body;
+  console.log(map);
   var my_count;
 
   con.query("SELECT COUNT(*) AS namesCount FROM businesses", function (err, rows, fields) {
@@ -186,11 +186,10 @@ app.post('/mapinfo',urlencodedParser,function(req,res){
       type:result[i].type
     });
     }
-    console.log(myobj_business);
-    res.writeHead(200, {'Content-Type': 'application/json'});
-    var arr={'business':myobj_business};
-    res.end(JSON.stringify(arr));
-  });
+  console.log(myobj_business);
+  res.writeHead(200, {'Content-Type': 'application/json'});
+  var del={Businesses:myobj_business};
+  res.end(JSON.stringify(del));
 });
 });
 
