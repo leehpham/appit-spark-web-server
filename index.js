@@ -42,8 +42,8 @@ app.get('/reviews',function(req,res){
 app.get('/newbusiness',function(req,res){
   res.render('newbusiness',{qs: req.query})
 });
-app.get('/mapinfo',function(req,res){
-  res.render('mapinfo',{qs: req.query})
+app.get('/maps',function(req,res){
+  res.render('maps',{qs: req.query})
 });
 app.post('/login',urlencodedParser,function(req,res){
   console.log(req.body);
@@ -165,7 +165,7 @@ app.post('/business',urlencodedParser,function(req,res){
   });
   });
 });
-app.post('/mapinfo',urlencodedParser,function(req,res){
+app.post('/maps',urlencodedParser,function(req,res){
   var a=req.body.name;
   console.log(a);
   var my_count;
