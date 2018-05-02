@@ -42,8 +42,8 @@ app.get('/reviews',function(req,res){
 app.get('/newbusiness',function(req,res){
   res.render('newbusiness',{qs: req.query})
 });
-app.get('/mapinfo',function(req,res){
-  res.render('mapinfo',{qs: req.query})
+app.get('/maps',function(req,res){
+  res.render('maps',{qs: req.query})
 });
 app.post('/login',urlencodedParser,function(req,res){
   console.log(req.body);
@@ -165,9 +165,10 @@ app.post('/business',urlencodedParser,function(req,res){
   });
   });
 });
-app.post('/mapinfo',urlencodedParser,function(req,res){
-  var a=req.body.name;
-  console.log(a);
+});
+app.post('/maps',urlencodedParser,function(req,res){
+  var map=req.body;
+  console.log(map);
   var my_count;
 
   con.query("SELECT COUNT(*) AS namesCount FROM businesses", function (err, rows, fields) {
@@ -175,6 +176,7 @@ app.post('/mapinfo',urlencodedParser,function(req,res){
   my_count=rows[0].namesCount;
   });
   var myobj_business; var ar;
+
   con.query("SELECT * FROM businesses", function (err, result, fields) {
   if (err) throw err;
   myobj_business=[];
@@ -188,11 +190,11 @@ app.post('/mapinfo',urlencodedParser,function(req,res){
     }
     console.log(myobj_business);
     res.writeHead(200, {'Content-Type': 'application/json'});
-    var arr={'business':myobj_business};
-    res.end(JSON.stringify(arr));
+    var del={Businesses:myobj_business};
+    res.end(JSON.stringify(del));
   });
-});
-});
+  });
+
 
 app.post('/sign-up',urlencodedParser,function(req,res){
   var count_user;
@@ -412,7 +414,7 @@ app.post('/users/reviews', urlencodedParser, function(request, response) {
           response.writeHead(200, {'Content-Type': 'application/json'});
           reply.status = false;
           response.end(JSON.stringify(reply));
-          
+
           throw err;
         }
         console.log("Data updated");
@@ -430,7 +432,6 @@ app.post('/users/search', urlencodedParser, function(request, response) {
 
   // var sql = 'SELECT * FROM businesses WHERE name LIKE "%' + request.query.key + '%"';
   var sql = 'SELECT business_id, name, address, type, number_of_reviews, average_rating FROM businesses WHERE name LIKE "%' + key + '%"';
-  
   con.query(sql, function(err, result) {
     if (err) throw err;
     // The return data is an object
