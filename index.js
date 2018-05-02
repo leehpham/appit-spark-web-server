@@ -432,7 +432,6 @@ app.post('/users/search', urlencodedParser, function(request, response) {
 
   // var sql = 'SELECT * FROM businesses WHERE name LIKE "%' + request.query.key + '%"';
   var sql = 'SELECT business_id, name, address, type, number_of_reviews, average_rating FROM businesses WHERE name LIKE "%' + key + '%"';
-
   con.query(sql, function(err, result) {
     if (err) throw err;
     // The return data is an object
